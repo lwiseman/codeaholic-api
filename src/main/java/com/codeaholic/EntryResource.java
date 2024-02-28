@@ -14,6 +14,8 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.ResponseBuilder;
 
 @Path("/entries")
 @Produces(MediaType.APPLICATION_JSON)
@@ -21,8 +23,10 @@ import jakarta.ws.rs.core.MediaType;
 public class EntryResource {
 
     @GET
-    public Uni<List<Entry>> list() {
-        return Entry.listAll();
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response list() {
+//        return Entry.listAll();
+        return Response.status(200).entity("{\"test\": 42 }").build();
     }
 
 /*

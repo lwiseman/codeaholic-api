@@ -12,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.CascadeType;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
