@@ -16,18 +16,24 @@ import jakarta.persistence.ManyToOne;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.Getter;
+
 @Entity
 public class Entry extends PanacheEntityBase {
 
     @Id
+    @Getter
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     public Long id;
 
+    @Getter
     public String title;
 
     @Column(length = 40, unique = true)
+    @Getter
     public String slug;
 
+    @Getter
     public String content; // Angular1 content to compile
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -35,10 +41,5 @@ public class Entry extends PanacheEntityBase {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private Set<Entry> children;
-
-    @JsonIgnore
-    public Set<Entry> getChildren() {
-        return null;
-    }
+    public Set<Entry> children;
 }
