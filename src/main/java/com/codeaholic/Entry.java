@@ -13,17 +13,28 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToOne;
 
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 import lombok.Getter;
+import lombok.EqualsAndHashCode;
 
 @Entity
+@JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Entry extends PanacheEntityBase {
 
     @Id
     @Getter
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @EqualsAndHashCode.Include
     public Long id;
 
     @Getter
@@ -42,4 +53,9 @@ public class Entry extends PanacheEntityBase {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public Set<Entry> children;
+
+    @JsonIgnore
+    public Set<Entry> getChildren() {
+        return children;
+    }
 }
