@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
@@ -19,40 +20,53 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@JsonNaming(value = PropertyNamingStrategy.SnakeCaseStrategy.class)
+@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Entry extends PanacheEntityBase {
+    public Entry() {
+    }
+
+    public Entry(Long id, String title, String slug, String content, Entry parent) {
+        this.id = id;
+    }
 
     @Id
     @Getter
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Setter
     @EqualsAndHashCode.Include
-    public Long id;
+    private Long id;
 
     @Getter
-    public String title;
+    @Setter
+    private String title;
 
     @Column(length = 40, unique = true)
     @Getter
-    public String slug;
+    @Setter
+    private String slug;
 
     @Getter
-    public String content; // Angular1 content to compile
+    @Setter
+    private String content; // Angular1 content to compile
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Getter
+    @Setter
     private Entry parent;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    public Set<Entry> children;
+    @Setter
+    private Set<Entry> children;
 
     @JsonIgnore
     public Set<Entry> getChildren() {
