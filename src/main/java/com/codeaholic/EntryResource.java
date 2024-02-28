@@ -35,11 +35,9 @@ public class EntryResource {
     @GET
     @Path("/{id}")
     public Uni<EntryDTO> getById(Long id) {
-        return Entry.findById(id).map(entry -> {
-        //return EntryDTO.builder().id(entry.getId()).title(entry.getTitle()).slug(entry.getSlug()).content(entry.getContent()).build();
-//            Long wtf = entry.getId();
-            return EntryDTO.builder().build();
-        });
+        Uni<Entry> entryUni = Entry.findById(id);
+        Uni<EntryDTO> entryDTOUni = entryUni.map(EntryDTO::ofEntry);
+        return entryDTOUni;
     }
 
 }
