@@ -21,7 +21,7 @@ class EntryResourceTest {
     @Test
     void testRelations() {
         Entry root = new Entry();
-        root.id = Long.valueOf(1);
+        root.setId(Long.valueOf(1));
         Uni<Entry> uni = Uni.createFrom().item(root);
         Uni<EntryDTO> entryDtoUni = uni.map(EntryDTO::ofEntry);
     }
