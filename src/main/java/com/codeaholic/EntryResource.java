@@ -31,54 +31,41 @@ import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 @ApplicationScoped
 public class EntryResource {
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Multi<EntryDTO> list() {
-	List<Entry> entries = new ArrayList();
+    private ArrayList<Entry> entries;
+
+    public EntryResource() {
+	entries = new ArrayList();
         Entry root = new Entry();
-	root.setId(Long.valueOf(1));
+	root.setId(Long.valueOf(4));
 	root.setTitle("Root");
 	root.setSlug("root");
 	root.setContent("");
 	entries.add(root);
         Entry js = new Entry();
-	js.setId(Long.valueOf(1));
+	js.setId(Long.valueOf(5));
 	js.setTitle("JavaScript");
 	js.setSlug("js");
 	js.setContent("...");
         js.setParent(root);
 	entries.add(js);
         Entry euler = new Entry();
-	euler.setId(Long.valueOf(1));
+	euler.setId(Long.valueOf(6));
 	euler.setTitle("Project Euler");
 	euler.setSlug("euler");
 	euler.setContent("...");
         euler.setParent(root);
 	entries.add(euler);
-//	return Response.ok().entity(entries.stream().map(EntryDTO::ofEntry).collect(Collectors.toList())).build();
-	return Multi.createFrom().items(root, js, euler).onItem().transform(EntryDTO::ofEntry);
-//	return entries.stream().map(EntryDTO::ofEntry).collect(Collectors.toList());
-//	return entries;
-//        return Response.ok().entity(rootDTO).build();
-//        return Entry.listAll();
-//        return Response.status(200).entity("{\"test\": 42 }").build();
     }
 
-/*
+    @GET
+    public Multi<EntryDTO> list() {
+	return Multi.createFrom().iterable(entries).onItem().transform(EntryDTO::ofEntry);
+    }
+
     @GET
     @Path("/{slug}")
-    public Uni<List<Entry>> get(String slug) {
-        return Entry.list("slug", slug);
-    }
-*/
-    @GET
-    @Path("/{id}")
-    public Uni<Entry> getById(Long id) {
-        return Entry.findById(1);
-//        Entry entry = new Entry();
-//	return ResponseBuilder.ok(entry).build();
-	//return entry.map(EntryDTO::ofEntry);
-        //return ResponseBuilder.ok(entryDTO).build();
+    public Uni<Entry> getById(String slug) {
+        return Entry.find("slug", slug).firstResult();
     }
 
     private Function<Entry, EntryDTO> toEntryDTO = e -> EntryDTO.builder()
