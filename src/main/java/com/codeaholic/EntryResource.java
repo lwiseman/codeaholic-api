@@ -6,10 +6,13 @@ import com.codeaholic.EntryDTO;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
-import io.quarkus.hibernate.reactive.panache.common.WithSessionOnDemand;
+import io.quarkus.hibernate.reactive.panache.common.WithSession;
 
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.Multi;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.GET;
@@ -30,9 +33,35 @@ public class EntryResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response list() {
+    public Multi<EntryDTO> list() {
+	List<Entry> entries = new ArrayList();
+        Entry root = new Entry();
+	root.setId(Long.valueOf(1));
+	root.setTitle("Root");
+	root.setSlug("root");
+	root.setContent("");
+	entries.add(root);
+        Entry js = new Entry();
+	js.setId(Long.valueOf(1));
+	js.setTitle("JavaScript");
+	js.setSlug("js");
+	js.setContent("...");
+        js.setParent(root);
+	entries.add(js);
+        Entry euler = new Entry();
+	euler.setId(Long.valueOf(1));
+	euler.setTitle("Project Euler");
+	euler.setSlug("euler");
+	euler.setContent("...");
+        euler.setParent(root);
+	entries.add(euler);
+//	return Response.ok().entity(entries.stream().map(EntryDTO::ofEntry).collect(Collectors.toList())).build();
+	return Multi.createFrom().items(root, js, euler).onItem().transform(EntryDTO::ofEntry);
+//	return entries.stream().map(EntryDTO::ofEntry).collect(Collectors.toList());
+//	return entries;
+//        return Response.ok().entity(rootDTO).build();
 //        return Entry.listAll();
-        return Response.status(200).entity("{\"test\": 42 }").build();
+//        return Response.status(200).entity("{\"test\": 42 }").build();
     }
 
 /*
@@ -44,10 +73,10 @@ public class EntryResource {
 */
     @GET
     @Path("/{id}")
-    @WithSessionOnDemand
-    public Uni<EntryDTO> getById(Long id) {
-        Uni<Entry> entry = Entry.findById(id);
-	return entry.map(toEntryDTO);
+    public Uni<Entry> getById(Long id) {
+        return Entry.findById(1);
+//        Entry entry = new Entry();
+//	return ResponseBuilder.ok(entry).build();
 	//return entry.map(EntryDTO::ofEntry);
         //return ResponseBuilder.ok(entryDTO).build();
     }

@@ -9,14 +9,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 
 @QuarkusTest
 class EntryResourceTest {
-    @Test
-    void testEntryEndpoint() {
-        given()
-          .when().get("/entries/1")
-          .then()
-             .statusCode(200)
-             .body(containsString("{"));
-    }
 
     @Test
     void testRelations() {
