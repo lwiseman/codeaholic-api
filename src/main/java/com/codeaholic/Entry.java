@@ -2,11 +2,13 @@ package com.codeaholic;
 
 import java.util.Set;
 
+import io.quarkus.hibernate.reactive.panache.PanacheEntity;
 import io.quarkus.hibernate.reactive.panache.PanacheEntityBase;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Cacheable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,46 +31,15 @@ import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
-@JsonIgnoreProperties({"hibernate_lazy_initializer", "handler"})
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
-public class Entry extends PanacheEntityBase {
+@Cacheable
+public class Entry extends PanacheEntity {
 
-    @Id
-    @Getter
-    @Setter
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @EqualsAndHashCode.Include
-    private Long id;
-
-    @Getter
-    @Setter
-    private String title;
+    public String title;
 
     @Column(length = 40, unique = true)
-    @Getter
-    @Setter
-    private String slug;
+    public String slug;
 
-    @Getter
-    @Setter
-    private String content; // Angular1 content to compile
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Getter
-    @Setter
-    private Entry parent;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Setter
-    private Set<Entry> children;
-
-    @JsonIgnore
-    public Set<Entry> getChildren() {
-        return children;
-    }
+    public String content; // Angular1 content to compile
 
     public static Uni<Entry> findBySlug(String slug) {
         return find("slug", slug).firstResult();

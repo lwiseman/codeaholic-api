@@ -1,20 +1,29 @@
 package com.codeaholic;
 
-import io.quarkus.test.junit.QuarkusTest;
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.Test;
-import io.smallrye.mutiny.Uni;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.response.Response;
+
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.text.IsEmptyString.emptyString;
 
 @QuarkusTest
 class EntryResourceTest {
 
     @Test
     void testRelations() {
-        Entry root = new Entry();
-        root.setId(Long.valueOf(1));
-        Uni<Entry> uni = Uni.createFrom().item(root);
-        Uni<EntryDTO> entryDtoUni = uni.map(EntryDTO::ofEntry);
+        Response response = given()
+                .when()
+                .get("/entries")
+                .then()
+                .statusCode(200)
+                .contentType("application/json")
+                .extract().response();
+        assertThat(response.jsonPath().getList("slug")).containsExactlyInAnyOrder("root", "js", "euler");
     }
 }
