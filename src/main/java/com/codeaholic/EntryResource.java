@@ -25,7 +25,7 @@ import jakarta.ws.rs.core.Response;
 import org.jboss.resteasy.reactive.RestResponse; 
 import org.jboss.resteasy.reactive.RestResponse.ResponseBuilder;
 
-@Path("entries")
+@Path("/entries")
 @ApplicationScoped
 @Produces(MediaType.APPLICATION_JSON)
 public class EntryResource {
@@ -36,9 +36,16 @@ public class EntryResource {
     }
 
     @GET
-    @Path("{id}")
-    public Uni<Entry> getSingle(Long id) {
-        return Entry.findById(id);
+    @Path("/find/{slug}")
+    public Uni<Entry> getBySlug(String slug) {
+        return Entry.findBySlug(slug);
     }
 
+    /*
+    @GET
+    @Path("/add")
+    public Uni<Void> addSlug() {
+        return Panache.withTransaction(entry::persist).
+    }
+    */
 }
