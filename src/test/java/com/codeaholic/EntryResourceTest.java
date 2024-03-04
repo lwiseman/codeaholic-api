@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.hibernate.orm.PersistenceUnit;
 import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.UserTransaction;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -20,10 +22,17 @@ import static org.hamcrest.text.IsEmptyString.emptyString;
 @QuarkusTest
 class EntryResourceTest {
 
-    @Inject
-    io.vertx.mutiny.pgclient.PgPool client;
+//    @Inject
+//    io.vertx.mutiny.pgclient.PgPool client;
+
+//    @Inject
+//    UserTransaction userTransaction;
+
+//    @Inject
+//    EntityManager em;
 
     @Test
+//    @Transactional
     void testRelations() {
         Response response = given()
                 .when()
@@ -38,6 +47,7 @@ class EntryResourceTest {
 	test.title = "Test";
 	test.slug = "test";
 	test.content = "...";
+//        test.persist();	
 //	em.persist(test);
     }
 }

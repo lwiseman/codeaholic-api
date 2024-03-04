@@ -39,6 +39,7 @@ public class Entry extends PanacheEntityBase {
     @Id
     @SequenceGenerator(name = "entry_seq_gen", sequenceName = "entry_seq", allocationSize = 1, initialValue = 1)
     @GeneratedValue(generator = "entry_seq_gen")
+    @JsonIgnore
     public Long id;
 
     public String title;
@@ -48,7 +49,7 @@ public class Entry extends PanacheEntityBase {
 
     public String content; // Angular1 content to compile
 
-    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     public Set<Entry> children;
 
     @ManyToOne(targetEntity = Entry.class)
