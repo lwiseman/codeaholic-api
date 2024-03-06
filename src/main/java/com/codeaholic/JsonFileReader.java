@@ -1,14 +1,11 @@
 package com.codeaholic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.CollectionType;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.io.InputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Singleton
 public class JsonFileReader {
