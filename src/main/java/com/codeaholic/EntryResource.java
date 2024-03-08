@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import io.quarkus.runtime.StartupEvent;
-
+import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import org.hibernate.reactive.mutiny.Mutiny;
 
@@ -32,7 +32,7 @@ public class EntryResource {
     EntryResource(JsonFileReader jsonFileReader, Vertx vertx, EntityManagerFactory entityManagerFactory) {
         Mutiny.SessionFactory sessionFactory = entityManagerFactory.unwrap(Mutiny.SessionFactory.class);
         try {
-            root = jsonFileReader.readFile(this.getClass().getClassLoader().getResourceAsStream("/META-INF/resources/CodeaholicRedesign.json"), Entry.class);
+            root = jsonFileReader.readFile(this.getClass().getClassLoader().getResourceAsStream("import.json"), Entry.class);
             System.out.println(root.children);
         } catch (IOException e) {
             e.printStackTrace();
