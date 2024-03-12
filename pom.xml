@@ -103,6 +103,7 @@
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
+		    <argLine>-Djdk.tracePinnedThreads</argLine> <!-- Added line -->
                 </configuration>
             </plugin>
             <plugin>
@@ -151,6 +152,7 @@
                                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
                                         <maven.home>${maven.home}</maven.home>
                                     </systemPropertyVariables>
+				    <argLine>-Djdk.tracePinnedThreads</argLine> <!-- Added line -->
                                 </configuration>
                             </execution>
                         </executions>

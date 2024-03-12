@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 import io.quarkus.runtime.StartupEvent;
+import io.smallrye.common.annotation.RunOnVirtualThread;
 import io.smallrye.common.annotation.Blocking;
 import io.smallrye.mutiny.Uni;
 import org.hibernate.reactive.mutiny.Mutiny;
@@ -28,18 +29,10 @@ import jakarta.enterprise.event.Observes;
 public class EntryResource {
     private Entry root;
 
-    @Inject
-    EntryResource(JsonFileReader jsonFileReader, Vertx vertx, EntityManagerFactory entityManagerFactory) {
-        Mutiny.SessionFactory sessionFactory = entityManagerFactory.unwrap(Mutiny.SessionFactory.class);
-        try {
-            root = jsonFileReader.readFile(this.getClass().getClassLoader().getResourceAsStream("import.json"), Entry.class);
-            System.out.println(root.children);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    void onStart(@Observes StartupEvent ev, Mutiny.SessionFactory sf) throws Exception, Throwable {
+    @RunOnVirtualThread
+    void onStart(@Observes StartupEvent ev, JsonFileReader jsonFileReader, Mutiny.SessionFactory sf) throws Throwable {
+        root = jsonFileReader.readFile(this.getClass().getClassLoader().getResourceAsStream("import.json"), Entry.class);
+        System.out.println(Thread.currentThread());
         VertxContextSupport.subscribeAndAwait(() -> {
             return sf.withTransaction(session -> session.persist(root));
         });
